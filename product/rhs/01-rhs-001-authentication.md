@@ -1,43 +1,72 @@
 # 🛡️ RHS-001: Authentication and Onboarding
 
-**Tujuan:** Memastikan akun mahasiswa dapat diaktifkan dengan aman dan onboarding memiliki hasil yang terukur.
+> **Requirement Hardening Specification**
+>
+> **Reference:** PRD §8.1 – Authentication & Account  
+> **Status:** Approved  
+> **Priority:** Critical (Launch Blocking)
 
 ---
 
-## 📋 Business Rules
+# 📖 Overview
+
+Dokumen ini mendefinisikan requirement teknis dan aturan bisnis untuk proses **Authentication** dan **Onboarding** mahasiswa pada Platform Digital Angkatan Informatika 2025.
+
+Tujuan utama requirement ini adalah memastikan bahwa setiap akun:
+
+- Dibuat secara aman.
+- Memiliki proses onboarding yang konsisten.
+- Dapat diaudit.
+- Memiliki kontrol akses yang benar.
+- Memenuhi standar keamanan minimum.
+
+---
+
+# 🎯 Objective
+
+- Memastikan proses aktivasi akun berjalan aman.
+- Memastikan onboarding wajib diselesaikan sebelum menggunakan sistem.
+- Mencegah penggunaan password yang lemah.
+- Menjamin seluruh proses dapat diaudit.
+
+---
+
+# 📋 Business Rules
 
 | ID | Rule |
 |----|------|
-| AUTH-01 | Akun mahasiswa dibuat oleh Superadmin menggunakan NIM sebagai username/identifier |
-| AUTH-02 | Password awal berupa temporary credential acak yang aman dan tidak menggunakan NIM atau data pribadi |
-| AUTH-03 | Pada login pertama, mahasiswa wajib mengganti password |
-| AUTH-04 | Mahasiswa belum dianggap selesai onboarding sampai password diganti, profil wajib dilengkapi, dan dashboard berhasil diakses |
-| AUTH-05 | Akun yang belum selesai onboarding tidak boleh mengakses fitur internal normal selain flow onboarding yang diperlukan |
+| AUTH-01 | Akun mahasiswa dibuat oleh **Superadmin** menggunakan **NIM** sebagai username. |
+| AUTH-02 | Password awal berupa temporary credential yang dihasilkan secara acak dan aman. |
+| AUTH-03 | Password sementara tidak boleh menggunakan NIM atau informasi pribadi. |
+| AUTH-04 | Login pertama wajib melakukan perubahan password. |
+| AUTH-05 | Onboarding dianggap selesai apabila password berhasil diganti, profil wajib dilengkapi, dan dashboard berhasil diakses. |
+| AUTH-06 | Mahasiswa yang belum menyelesaikan onboarding tidak boleh mengakses fitur internal selain proses onboarding. |
+| AUTH-07 | Password reset hanya dapat dilakukan oleh Superadmin pada MVP. |
 
 ---
 
-## ✅ Validation Rules
+# ✅ Validation Rules
 
 | ID | Rule |
 |----|------|
-| VAL-01 | NIM wajib unik |
-| VAL-02 | Password baru minimum 12 karakter |
-| VAL-03 | Password baru tidak boleh sama dengan temporary password |
-| VAL-04 | Password tidak boleh menggunakan nilai yang mudah ditebak (NIM, nama, tanggal lahir) |
-| VAL-05 | Data wajib profil: nama, NIM, angkatan, asal daerah |
+| VAL-01 | NIM wajib unik. |
+| VAL-02 | Password baru minimal **12 karakter**. |
+| VAL-03 | Password baru tidak boleh sama dengan temporary password. |
+| VAL-04 | Password tidak boleh menggunakan NIM, nama, atau tanggal lahir. |
+| VAL-05 | Password harus memenuhi kebijakan password yang berlaku. |
+| VAL-06 | Profil wajib terdiri dari Nama, NIM, Angkatan, dan Asal Daerah. |
 
 ---
 
-## 🔐 Permission Rules
+# 🔐 Permission Rules
 
-| ID | Rule |
-|----|------|
-| PER-01 | Mahasiswa hanya dapat menyelesaikan onboarding untuk akun sendiri |
-| PER-02 | Superadmin dapat membuat dan mengelola akun |
-| PER-03 | Administrator tidak dapat melihat password, password hash, TOTP secret, atau backup codes |
+| Role | Permission |
+|------|------------|
+| Student | Menyelesaikan onboarding akun sendiri |
+| Administrator | Tidak dapat melihat password, password hash, TOTP secret, maupun backup code |
+| Superadmin | Membuat akun, reset password, mengubah status akun |
 
 ---
-
 
 # 🔄 State Transition
 
@@ -146,7 +175,7 @@ POST /api/v1/auth/login
 
 ```json
 {
-  "nim": "20251337037",
+  "nim": "2025001",
   "password": "temporary_password"
 }
 ```
@@ -161,10 +190,10 @@ POST /api/v1/auth/onboarding
 
 ```json
 {
-  "new_password": "Kaizer_Anti_Error86!",
+  "new_password": "SecurePassword123!",
   "profile": {
-    "name": "Abidzar Dzakwan",
-    "origin": "Surabaya"
+    "name": "John Doe",
+    "origin": "Jakarta"
   }
 }
 ```
