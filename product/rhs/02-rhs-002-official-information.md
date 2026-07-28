@@ -1,33 +1,30 @@
-# 🛡️ RHS-001: Authentication and Onboarding
+# 📢 RHS-002: Official Information
 
 > **Requirement Hardening Specification**
 >
-> **Reference:** PRD §8.1 – Authentication & Account  
-> **Status:** Approved  
-> **Priority:** Critical (Launch Blocking)
+> **Reference:** PRD §8.3 – Official Information / Announcement  
+> **Document ID:** RHS-002  
+> **Status:** ✅ Approved  
+> **Priority:** 🔴 Critical (Launch Blocking)
 
 ---
 
 # 📖 Overview
 
-Dokumen ini mendefinisikan requirement teknis dan aturan bisnis untuk proses **Authentication** dan **Onboarding** mahasiswa pada Platform Digital Angkatan Informatika 2025.
+Dokumen ini mendefinisikan aturan implementasi (*implementation requirements*) untuk modul **Official Information**.
 
-Tujuan utama requirement ini adalah memastikan bahwa setiap akun:
-
-- Dibuat secara aman.
-- Memiliki proses onboarding yang konsisten.
-- Dapat diaudit.
-- Memiliki kontrol akses yang benar.
-- Memenuhi standar keamanan minimum.
+Modul ini merupakan fondasi utama Platform Digital Angkatan Informatika 2025 sebagai **Single Source of Truth**, sehingga seluruh informasi resmi yang dipublikasikan harus memenuhi proses verifikasi, memiliki lifecycle yang jelas, serta dapat diaudit.
 
 ---
 
 # 🎯 Objective
 
-- Memastikan proses aktivasi akun berjalan aman.
-- Memastikan onboarding wajib diselesaikan sebelum menggunakan sistem.
-- Mencegah penggunaan password yang lemah.
-- Menjamin seluruh proses dapat diaudit.
+Requirement ini bertujuan untuk memastikan bahwa:
+
+- seluruh informasi resmi berasal dari sumber yang dapat dipercaya;
+- informasi yang dipublikasikan selalu merupakan versi terbaru;
+- perubahan informasi dapat ditelusuri melalui audit log;
+- pengguna hanya menerima informasi yang telah diverifikasi.
 
 ---
 
@@ -35,26 +32,31 @@ Tujuan utama requirement ini adalah memastikan bahwa setiap akun:
 
 | ID | Rule |
 |----|------|
-| AUTH-01 | Akun mahasiswa dibuat oleh **Superadmin** menggunakan **NIM** sebagai username. |
-| AUTH-02 | Password awal berupa temporary credential yang dihasilkan secara acak dan aman. |
-| AUTH-03 | Password sementara tidak boleh menggunakan NIM atau informasi pribadi. |
-| AUTH-04 | Login pertama wajib melakukan perubahan password. |
-| AUTH-05 | Onboarding dianggap selesai apabila password berhasil diganti, profil wajib dilengkapi, dan dashboard berhasil diakses. |
-| AUTH-06 | Mahasiswa yang belum menyelesaikan onboarding tidak boleh mengakses fitur internal selain proses onboarding. |
-| AUTH-07 | Password reset hanya dapat dilakukan oleh Superadmin pada MVP. |
+| OFF-01 | Hanya informasi yang telah diverifikasi yang dapat dipublikasikan sebagai Official Information. |
+| OFF-02 | Informasi akademik harus berasal dari dosen atau sumber resmi kampus sebelum dipublikasikan. |
+| OFF-03 | Informasi kegiatan angkatan harus diverifikasi melalui pengurus atau pihak yang berwenang. |
+| OFF-04 | Informasi yang belum diverifikasi tidak boleh dipublikasikan sebagai Official Information. |
+| OFF-05 | Dalam kondisi mendesak, pemberitahuan sementara dapat disampaikan melalui kanal komunikasi lain dengan status **Belum Terverifikasi**. |
+| OFF-06 | Informasi yang telah dipublikasikan dapat diperbarui tanpa mengubah identitas informasi. |
+| OFF-07 | Versi terbaru selalu menjadi versi utama yang ditampilkan kepada pengguna. |
+| OFF-08 | Riwayat perubahan wajib disimpan pada audit log. |
+| OFF-09 | Informasi permanen tidak memiliki tanggal berakhir. |
+| OFF-10 | Informasi sementara wajib memiliki periode publikasi yang jelas. |
 
 ---
 
 # ✅ Validation Rules
 
-| ID | Rule |
-|----|------|
-| VAL-01 | NIM wajib unik. |
-| VAL-02 | Password baru minimal **12 karakter**. |
-| VAL-03 | Password baru tidak boleh sama dengan temporary password. |
-| VAL-04 | Password tidak boleh menggunakan NIM, nama, atau tanggal lahir. |
-| VAL-05 | Password harus memenuhi kebijakan password yang berlaku. |
-| VAL-06 | Profil wajib terdiri dari Nama, NIM, Angkatan, dan Asal Daerah. |
+| ID | Requirement |
+|----|-------------|
+| VAL-01 | Judul wajib diisi. |
+| VAL-02 | Isi informasi wajib tersedia. |
+| VAL-03 | Prioritas hanya boleh menggunakan nilai **Critical**, **Important**, atau **Normal**. |
+| VAL-04 | Lifecycle harus menggunakan status yang telah ditentukan sistem. |
+| VAL-05 | Start Date tidak boleh lebih besar daripada End Date. |
+| VAL-06 | Informasi yang telah melewati End Date tidak boleh tampil sebagai informasi aktif. |
+| VAL-07 | Setiap informasi harus memiliki Publisher. |
+| VAL-08 | Informasi yang telah diverifikasi wajib memiliki Verification Source. |
 
 ---
 
@@ -62,55 +64,62 @@ Tujuan utama requirement ini adalah memastikan bahwa setiap akun:
 
 | Role | Permission |
 |------|------------|
-| Student | Menyelesaikan onboarding akun sendiri |
-| Administrator | Tidak dapat melihat password, password hash, TOTP secret, maupun backup code |
-| Superadmin | Membuat akun, reset password, mengubah status akun |
+| Guest | Melihat informasi publik yang telah dipublikasikan. |
+| Student | Melihat seluruh Official Information yang menjadi hak aksesnya. |
+| Administrator | Membuat, mengubah, serta mengarsipkan informasi sesuai kewenangan operasional. |
+| Superadmin | Memiliki kontrol penuh terhadap seluruh lifecycle Official Information. |
 
 ---
 
-# 🔄 State Transition
+# 🔄 Information Lifecycle
 
 ```mermaid
 stateDiagram-v2
 
-    [*] --> Invited : Account Created
+    [*] --> Draft
 
-    Invited --> Active : Complete Onboarding
+    Draft --> Published : Publish
 
-    Active --> Suspended : Suspend Account
-    Active --> Alumni : Graduate
-    Active --> Deactivated : Delete Account
+    Published --> Updated : Update
 
-    Suspended --> Active : Reactivate
-    Suspended --> Alumni : Graduation Policy
-    Suspended --> Deactivated : Delete Account
+    Updated --> Updated : New Revision
 
-    Alumni --> Deactivated : Archive / Delete
+    Published --> Expired : End Date
+
+    Updated --> Expired : End Date
+
+    Draft --> Archived : Archive
+
+    Published --> Archived : Archive
+
+    Updated --> Archived : Archive
+
+    Expired --> Archived : Archive
 ```
 
 ---
 
-# 📊 State Transition Summary
+# 📊 Lifecycle Summary
 
-| State | Allowed Transition |
-|------|--------------------|
-| **Invited** | → Active |
-| **Active** | → Suspended, Alumni, Deactivated |
-| **Suspended** | → Active, Alumni, Deactivated |
-| **Alumni** | → Deactivated |
+| State | Description |
+|-------|-------------|
+| Draft | Informasi masih dalam proses penyusunan dan belum dapat diakses pengguna. |
+| Published | Informasi aktif dan dapat diakses sesuai hak akses. |
+| Updated | Informasi telah direvisi, namun versi terbaru tetap menjadi informasi utama. |
+| Expired | Informasi telah melewati masa berlaku dan tidak lagi dianggap aktif. |
+| Archived | Informasi disimpan sebagai arsip dan tidak ditampilkan pada daftar informasi aktif. |
 
 ---
 
 # ⚠️ Edge Cases & Error Handling
 
-| Scenario | Expected Behavior |
-|----------|-------------------|
-| Login menggunakan temporary password setelah password berhasil diganti | Ditolak |
-| Password change gagal | Akun tetap berada pada status onboarding sebelumnya |
-| NIM sudah digunakan | Pembuatan akun dibatalkan |
-| Request onboarding dikirim ulang | Sistem harus idempotent |
-| Temporary password kedaluwarsa | Superadmin melakukan reset password |
-| Browser ditutup saat onboarding | Progress tetap tersimpan sesuai kebijakan sistem |
+| Scenario | Expected Behaviour |
+|----------|--------------------|
+| Informasi diperbarui beberapa kali | Pengguna hanya melihat versi terbaru. |
+| Informasi penting diperbarui setelah telah dibaca | Dashboard tetap menampilkan versi terbaru sebagai informasi utama. |
+| End Date sama dengan waktu saat ini | Sistem menggunakan aturan boundary yang konsisten untuk menentukan status aktif atau berakhir. |
+| Informasi dipublikasikan tanpa verifikasi | Sistem menolak proses publikasi. |
+| Publisher menghapus informasi yang masih aktif | Informasi harus melalui proses archive sesuai lifecycle. |
 
 ---
 
@@ -118,116 +127,70 @@ stateDiagram-v2
 
 | ID | Given | When | Then |
 |----|-------|------|------|
-| AC-01 | Akun baru | Mahasiswa login pertama kali | Sistem memaksa perubahan password |
-| AC-02 | Password baru valid | Password disimpan | Temporary password tidak dapat digunakan kembali |
-| AC-03 | Profil wajib belum lengkap | Mahasiswa membuka dashboard | Sistem mengarahkan ke onboarding |
-| AC-04 | Onboarding selesai | Mahasiswa login kembali | Dashboard dapat diakses |
-| AC-05 | Password tidak memenuhi kebijakan | Mahasiswa menyimpan password | Sistem menolak dan menampilkan validasi |
+| AC-01 | Informasi belum diverifikasi | Admin melakukan publish | Sistem menolak publikasi. |
+| AC-02 | Informasi berstatus Published | Dashboard dibuka | Informasi tampil sesuai prioritas dan visibility. |
+| AC-03 | Informasi diperbarui | Perubahan disimpan | Audit log mencatat perubahan. |
+| AC-04 | End Date telah terlewati | Scheduler dijalankan | Status berubah menjadi Expired. |
+| AC-05 | Informasi berprioritas Critical | Dashboard dimuat | Informasi tampil sebelum informasi lain. |
 
 ---
 
 # 🔒 Security Requirements
 
-| Requirement | Implementation |
-|------------|----------------|
-| Password Storage | Argon2id atau BCrypt |
-| Password Transmission | HTTPS Only |
-| Password Hash | Tidak pernah dikirim kembali ke client |
-| Credential Logging | Dilarang muncul pada log |
-| Session | HttpOnly Cookie atau Secure Token |
-| Rate Limiting | Wajib pada endpoint login |
-| Brute Force Protection | Account Lockout / Delay |
-| CSRF Protection | Wajib untuk session-based authentication |
+| ID | Requirement |
+|----|-------------|
+| SEC-01 | Hanya pengguna yang memiliki permission dapat membuat atau mengubah Official Information. |
+| SEC-02 | Seluruh perubahan harus melewati validasi authorization pada backend. |
+| SEC-03 | Informasi yang belum dipublikasikan tidak boleh dapat diakses oleh pengguna biasa. |
+| SEC-04 | Metadata publisher dan verification source tidak boleh dapat dimanipulasi secara langsung oleh client. |
 
 ---
 
 # 📝 Audit Requirements
 
-Sistem harus mencatat minimal aktivitas berikut:
+Sistem wajib mencatat aktivitas berikut:
 
-- Account Created
-- First Login
-- Password Changed
-- Password Reset
-- Account Activated
-- Account Suspended
-- Account Reactivated
-- Account Deactivated
+- Information Created
+- Information Published
+- Information Updated
+- Information Archived
+- Information Expired
+- Priority Changed
+- Verification Completed
 
-Audit log minimal berisi:
+Setiap audit event minimal mencatat:
 
-- Timestamp
-- User ID
 - Actor
+- Timestamp
 - Action
-- IP Address (opsional sesuai kebijakan)
-- Device Information (opsional)
+- Information ID
+- Previous State
+- Current State
 
 ---
 
-# 🌐 API Contract Reference
+# 🔗 Related Documents
 
-## Login
-
-```http
-POST /api/v1/auth/login
-```
-
-```json
-{
-  "nim": "2025001",
-  "password": "temporary_password"
-}
-```
-
----
-
-## Complete Onboarding
-
-```http
-POST /api/v1/auth/onboarding
-```
-
-```json
-{
-  "new_password": "SecurePassword123!",
-  "profile": {
-    "name": "John Doe",
-    "origin": "Jakarta"
-  }
-}
-```
-
----
-
-## Reset Password (Superadmin)
-
-```http
-POST /api/v1/auth/reset-password
-```
-
-```json
-{
-  "user_id": "uuid",
-  "reason": "User requested reset"
-}
-```
-
----
-
-# 📚 Related Documents
-
-- PRD §8.1 Authentication & Account
-- RHS-009 — Authorization & RBAC
-- RHS-010 — Security & Password Policy
-- RHS-011 — Audit Log
-- API Specification (Authentication)
-- Database Schema (Users)
+| Document | Description |
+|----------|-------------|
+| PRD §8.3 | Official Information |
+| RHS-003 | Dashboard Prioritization |
+| RHS-008 | Role Based Access Control |
+| RHS-012 | Audit Log |
 
 ---
 
 # 📌 Notes
 
-- Authentication merupakan **Launch Blocking Feature**.
-- Onboarding wajib selesai sebelum mahasiswa memperoleh akses ke fitur internal.
-- Seluruh implementasi harus mengikuti kebijakan keamanan platform dan prinsip **least privilege**.
+- Official Information merupakan **fondasi utama** Platform Digital Angkatan Informatika 2025 sebagai **Single Source of Truth**.
+- Dashboard harus selalu menampilkan **versi terbaru** dari setiap informasi resmi.
+- Riwayat perubahan disimpan untuk kepentingan audit dan tidak ditampilkan sebagai informasi utama kepada pengguna.
+- Seluruh implementasi harus mengikuti prinsip:
+  - **Integrity**
+  - **Consistency**
+  - **Auditability**
+  - **Trustworthiness**
+
+---
+
+> **End of Document — RHS-002: Official Information**
