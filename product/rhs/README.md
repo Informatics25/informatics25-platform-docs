@@ -53,7 +53,7 @@ Dokumentasi ini merupakan **Requirements Hardening Specification (RHS)** yang me
 
 ## 🔄 Traceability
 
-Setiap perubahan requirement yang berdampak pada keputusan bisnis harus dirujuk kembali ke [PRD](../Prd.md). Perubahan implementasi yang hanya memperjelas aturan teknis harus dicatat melalui IDR atau amendment yang sesuai.
+Setiap perubahan requirement yang berdampak pada keputusan bisnis harus dirujuk kembali ke [PRD](../PRD.md). Perubahan implementasi yang hanya memperjelas aturan teknis harus dicatat melalui IDR atau amendment yang sesuai.
 
 ---
 
@@ -93,7 +93,7 @@ Setiap perubahan requirement yang berdampak pada keputusan bisnis harus dirujuk 
 
 ## 🔗 Referensi
 
-- [Product Requirements Document (PRD)](../Prd.md)
-- [Implementation Detail Record (IDR)](../Idr.md)
+- [Product Requirements Document (PRD)](../PRD.md)
+- [Implementation Detail Record (IDR)](../IDR.md)
 - [API Documentation](../api/README.md)
 - [Database Schema](../database/schema.md)
