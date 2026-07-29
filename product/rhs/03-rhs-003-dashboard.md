@@ -175,6 +175,18 @@ Setiap audit event minimal mencatat:
 
 ---
 
+# 📑 Requirement Traceability Matrix (RTM)
+
+| PRD Reference | Requirement IDs |
+|--------------|-----------------|
+| PRD §8.2 – Dashboard | DASH-01 → DASH-10 |
+| PRD §8.3 – Official Information | Dashboard Priority |
+| PRD §8.4 – Schedule | Schedule Component |
+| PRD §8.5 – Knowledge Hub | Resource Component |
+| PRD §12.1 – Audit Log | Dashboard Audit |
+
+---
+
 # 🔗 Related Documents
 
 | Document | Description |
