@@ -169,6 +169,17 @@ Setiap audit event minimal mencatat:
 
 ---
 
+# 📑 Requirement Traceability Matrix (RTM)
+
+| PRD Reference | Requirement IDs |
+|--------------|-----------------|
+| PRD §8.3 – Official Information | OFF-01 → OFF-10 |
+| PRD §10.1 – RBAC | Permission Rules |
+| PRD §12.1 – Audit Log | Audit Requirements |
+| PRD §15 – Analytics | Related Event Tracking |
+
+---
+
 # 🔗 Related Documents
 
 | Document | Description |
