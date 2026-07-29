@@ -155,6 +155,18 @@ Setiap audit event minimal mencatat:
 
 ---
 
+# 📑 Requirement Traceability Matrix (RTM)
+
+| PRD Reference | Requirement IDs |
+|--------------|-----------------|
+| PRD §7.3 – Onboarding | AUTH-04, AUTH-05, AUTH-06 |
+| PRD §8.1 – Authentication & Account | AUTH-01 → AUTH-07 |
+| PRD §10.1 – RBAC | PER-01 → PER-03 |
+| PRD §10.2 – Administrative Security | SEC-01 → SEC-05 |
+| PRD §12.1 – Audit Log | Audit Requirements |
+
+---
+
 # 🔗 Related Documents
 
 | Document | Description |
