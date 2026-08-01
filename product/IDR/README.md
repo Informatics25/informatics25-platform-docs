@@ -144,7 +144,7 @@ Struktur ini digunakan untuk menjaga konsistensi seluruh dokumentasi implementas
 | Document | Description |
 |----------|-------------|
 | [PRD](../PRD.md) | Product Requirements Document |
-| [RHS](../RHS/README.md) | Requirements Hardening Specification |
+| [RHS](../rhs/README.md) | Requirements Hardening Specification |
 | API Documentation | Akan dibuat pada tahap implementasi |
 | Database Schema | Akan dibuat pada tahap desain basis data |
 | Architecture Documentation | Akan dibuat pada tahap perancangan arsitektur |
