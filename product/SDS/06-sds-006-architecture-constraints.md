@@ -286,7 +286,7 @@ flowchart TB
 ## Product Documentation
 
 - [Product Requirements Document (PRD)](../PRD.md)
-- [Requirements Hardening Specification (RHS)](../RHS/README.md)
+- [Requirements Hardening Specification (RHS)](../rhs/README.md)
 - [Implementation Detail Records (IDR)](../IDR/README.md)
 
 ## Related SDS
