@@ -14,8 +14,3 @@ Repository ini berisi seluruh dokumentasi resmi proyek Platform Digital Informat
 - API
 - Operations
 
-## Related Repositories
-
-- platform-frontend
-- platform-backend
-- platform-database
